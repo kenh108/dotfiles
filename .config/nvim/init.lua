@@ -1,5 +1,5 @@
 -- Keymaps
-vim.g.mapleader = " "
+-- vim.g.mapleader = " "
 
 local keymap = vim.keymap
 keymap.set("n", "<leader>h", "<C-w>h", { desc = "Switch to left window" })
@@ -20,78 +20,95 @@ vim.opt.relativenumber = true
 
 vim.opt.mouse = ""
 
-vim.cmd([[
-    set whichwrap+=<,h
-    set whichwrap+=>,l
-    set whichwrap+=[,]")
-]])
+-- vim.cmd([[
+--     set whichwrap+=<,h
+--     set whichwrap+=>,l
+--     set whichwrap+=[,]")
+-- ]])
 
-vim.cmd("autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o")
+-- vim.cmd("autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o")
 
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = "yaml",
-	callback = function()
-		vim.bo.tabstop = 2
-		vim.bo.shiftwidth = 2
-		vim.bo.softtabstop = 2
-		vim.bo.expandtab = true
-	end,
+    pattern = "yaml",
+    callback = function()
+        vim.bo.tabstop = 2
+        vim.bo.shiftwidth = 2
+        vim.bo.softtabstop = 2
+        vim.bo.expandtab = true
+    end,
 })
 
--- Clean copy toggle
-local clean_copy = false
+-- Make yank automatically copy to local clipboard via OSC 52
+vim.api.nvim_create_autocmd('TextYankPost', {
+    callback = function()
+        -- Get the yanked text
+        local content = vim.fn.getreg('"')
+        if content == "" then
+            return
+        end
 
-local original_neotree_state = nil
+        -- Encode and send OSC 52 sequence
+        local encoded = vim.fn.system('base64 -w0', content)
+        encoded = encoded:gsub('\n', '')
+        io.stdout:write('\x1b]52;c;' .. encoded .. '\x07')
+        io.stdout:flush()
+    end,
+})
 
-function ToggleCleanCopy()
-	if not clean_copy then
-		local neotree_visible = false
-		for _, win in ipairs(vim.api.nvim_list_wins()) do
-			local buf = vim.api.nvim_win_get_buf(win)
-			local ft = vim.api.nvim_buf_get_option(buf, "filetype")
-			if ft == "neo-tree" then
-				neotree_visible = true
-				break
-			end
-		end
-		original_neotree_state = neotree_visible
-
-		vim.wo.relativenumber = false
-		if original_neotree_state then
-			vim.cmd("Neotree close")
-		end
-		clean_copy = true
-	else
-		vim.wo.relativenumber = true
-		if original_neotree_state then
-			vim.cmd("Neotree show")
-		end
-
-		clean_copy = false
-	end
-end
-
-vim.keymap.set(
-	"n",
-	"<leader>cc",
-	ToggleCleanCopy,
-	{ desc = "Toggle clean copy mode (no line numbers, close NeoTree if open)" }
-)
+-- -- Clean copy toggle
+-- local clean_copy = false
+--
+-- local original_neotree_state = nil
+--
+-- function ToggleCleanCopy()
+--     if not clean_copy then
+--         local neotree_visible = false
+--         for _, win in ipairs(vim.api.nvim_list_wins()) do
+--             local buf = vim.api.nvim_win_get_buf(win)
+--             local ft = vim.api.nvim_buf_get_option(buf, "filetype")
+--             if ft == "neo-tree" then
+--                 neotree_visible = true
+--                 break
+--             end
+--         end
+--         original_neotree_state = neotree_visible
+--
+--         vim.wo.relativenumber = false
+--         if original_neotree_state then
+--             vim.cmd("Neotree close")
+--         end
+--         clean_copy = true
+--     else
+--         vim.wo.relativenumber = true
+--         if original_neotree_state then
+--             vim.cmd("Neotree show")
+--         end
+--
+--         clean_copy = false
+--     end
+-- end
+--
+-- vim.keymap.set(
+--     "n",
+--     "<leader>cc",
+--     ToggleCleanCopy,
+--     { desc = "Toggle clean copy mode (no line numbers, close NeoTree if open)" }
+-- )
 
 -- Lazy setup
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-	if vim.v.shell_error ~= 0 then
-		vim.api.nvim_echo({
-			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-			{ out, "WarningMsg" },
-			{ "\nPress any key to exit..." },
-		}, true, {})
-		vim.fn.getchar()
-		os.exit(1)
-	end
+    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+    if vim.v.shell_error ~= 0 then
+        vim.api.nvim_echo({
+            { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+            { out, "WarningMsg" },
+            { "\nPress any key to exit..." },
+        }, true, {})
+        vim.fn.getchar()
+        os.exit(1)
+    end
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -129,17 +146,38 @@ local plugins = {
             keymap.set("n", "<leader>e", "<cmd>Neotree filesystem toggle left<CR>", {})
         end,
     },
+    {
+        'nvim-treesitter/nvim-treesitter',
+        lazy = false,
+        build = ':TSUpdate',
+        config = function()
+            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            vim.opt.indentkeys = ""
+            -- vim.opt.autoindent = true
+        end
+    },
+    {
+        "kylchui/nvim-surround",
+        version = "^4.0.0", -- Use for stability; omit to use `main` branch for the latest features
+        event = "VeryLazy",
+        -- Optional: See `:h nvim-surround.configuration` and `:h nvim-surround.setup` for details
+        -- config = function()
+        --     require("nvim-surround").setup({
+        --         -- Put your configuration here
+        --     })
+        -- end
+    },
 }
 
 local opts = {
-	checker = {
-		enabled = true,
-		notify = false,
-	},
-	change_detection = {
-		enabled = false,
-		notify = true,
-	},
+    checker = {
+        enabled = true,
+        notify = false,
+    },
+    change_detection = {
+        enabled = false,
+        notify = true,
+    },
 }
 
 require("lazy").setup(plugins, opts)
