@@ -147,6 +147,7 @@ local plugins = {
         end,
     },
     {
+        -- after repo downloaded to lazy dir (currently ~/.local/share/nvim/lazy/nvim-treesitter), must checkout master branch
         "nvim-treesitter/nvim-treesitter",
         branch = 'master',
         lazy = false,
