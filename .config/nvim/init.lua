@@ -147,13 +147,18 @@ local plugins = {
         end,
     },
     {
-        'nvim-treesitter/nvim-treesitter',
+        "nvim-treesitter/nvim-treesitter",
+        branch = 'master',
         lazy = false,
-        build = ':TSUpdate',
+        build = ":TSUpdate",
         config = function()
-            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            require'nvim-treesitter.configs'.setup {
+                auto_install = true,
+                indent = {
+                    enable = true
+                }
+            }
             vim.opt.indentkeys = ""
-            -- vim.opt.autoindent = true
         end
     },
     {
