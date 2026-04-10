@@ -1,11 +1,14 @@
 -- Keymaps
--- vim.g.mapleader = " "
+vim.g.mapleader = " "
+vim.keymap.set("n", " ", "<Nop>", { desc = "Ignore space", silent = true })
 
-local keymap = vim.keymap
-keymap.set("n", "<leader>h", "<C-w>h", { desc = "Switch to left window" })
-keymap.set("n", "<leader>j", "<C-w>j", { desc = "Switch to window below" })
-keymap.set("n", "<leader>k", "<C-w>k", { desc = "Switch to window above" })
-keymap.set("n", "<leader>l", "<C-w>l", { desc = "Switch to right window" })
+vim.keymap.set("n", "<leader>h", "<C-w>h", { desc = "Switch to left window" })
+vim.keymap.set("n", "<leader>j", "<C-w>j", { desc = "Switch to window below" })
+vim.keymap.set("n", "<leader>k", "<C-w>k", { desc = "Switch to window above" })
+vim.keymap.set("n", "<leader>l", "<C-w>l", { desc = "Switch to right window" })
+
+-- Clear search highlights with Space + Enter
+vim.keymap.set('n', '<Leader><CR>', ':nohlsearch<CR>', { desc = "Clear search highlights" })
 
 -- Vim options
 vim.opt.autoindent = true
