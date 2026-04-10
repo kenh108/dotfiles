@@ -150,18 +150,12 @@ local plugins = {
         end,
     },
     {
-        -- after repo downloaded to lazy dir (currently ~/.local/share/nvim/lazy/nvim-treesitter), must checkout master branch
-        "nvim-treesitter/nvim-treesitter",
-        branch = 'master',
+        'nvim-treesitter/nvim-treesitter',
         lazy = false,
-        build = ":TSUpdate",
+        build = ':TSUpdate',
         config = function()
-            require'nvim-treesitter.configs'.setup {
-                auto_install = true,
-                indent = {
-                    enable = true
-                }
-            }
+            require('nvim-treesitter').install { 'lua', 'python', 'bash' }
+            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
             vim.opt.indentkeys = ""
         end
     },
