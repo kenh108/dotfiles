@@ -155,8 +155,7 @@ local plugins = {
         lazy = false,
         build = ':TSUpdate',
         config = function()
-            require('nvim-treesitter').install { 'lua', 'python', 'bash' }
-            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            require('nvim-treesitter').install { 'lua', 'python', 'bash', 'html' }
             vim.opt.indentkeys = ""
         end
     },
