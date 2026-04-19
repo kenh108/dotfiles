@@ -30,7 +30,7 @@ vim.opt.mouse = ""
 --     set whichwrap+=[,]")
 -- ]])
 
--- vim.cmd("autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o")
+vim.cmd("autocmd FileType * setlocal formatoptions+=r formatoptions+=o") 
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "yaml",
