@@ -156,6 +156,14 @@ local plugins = {
         build = ':TSUpdate',
         config = function()
             require('nvim-treesitter').install { 'lua', 'python', 'bash', 'html' }
+            -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            -- this works for files opened with nvim command or afterwards from nvim (eg. :edit ...)
+            vim.api.nvim_create_autocmd("FileType", {
+                pattern = "*",
+                callback = function()
+                    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                end,
+            })
             vim.opt.indentkeys = ""
         end
     },
