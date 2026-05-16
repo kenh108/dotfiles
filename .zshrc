@@ -18,6 +18,8 @@ export EDITOR='nvim'
 # Aliases
 alias vim='nvim'
 
+bindkey -s '^X' 'tmux attach -t '
+
 # Normal mode default for lines with zsh-vi-mode
 function zvm_config() {
     ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
