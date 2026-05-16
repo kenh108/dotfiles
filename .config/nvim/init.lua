@@ -33,7 +33,7 @@ vim.opt.mouse = ""
 vim.cmd("autocmd FileType * setlocal formatoptions+=r formatoptions+=o") 
 
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = "yaml",
+    pattern = { "yaml", "json" },
     callback = function()
         vim.bo.tabstop = 2
         vim.bo.shiftwidth = 2
@@ -145,9 +145,34 @@ local plugins = {
         },
         lazy = false, -- neo-tree will lazily load itself
         config = function()
-            local keymap = vim.keymap
+            vim.keymap.set("n", "<leader>e", "<cmd>Neotree filesystem toggle left<CR>", {})
 
-            keymap.set("n", "<leader>e", "<cmd>Neotree filesystem toggle left<CR>", {})
+            require("neo-tree").setup({
+                filesystem = {
+                    filtered_items = {
+                        visible = true,
+                        never_show = {
+                            ".venv",
+                            "__pycache__",
+                            ".git",
+                        },
+                    },
+                    window = {
+                        mappings = {
+                            ["/"] = "",
+                        },
+                    },
+                },
+                event_handlers = {
+                    {
+                        event = "neo_tree_buffer_enter",
+                        handler = function()
+                            vim.opt_local.number = true
+                            vim.opt_local.relativenumber = true
+                        end,
+                    },
+                },
+            })
         end,
     },
     {
