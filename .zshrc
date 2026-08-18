@@ -4,6 +4,7 @@ HISTSIZE=100000
 SAVEHIST=100000
 setopt share_history
 setopt rm_star_silent
+setopt NULL_GLOB
 
 # Vim keybindings
 bindkey -v
