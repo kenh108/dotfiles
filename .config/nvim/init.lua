@@ -124,7 +124,7 @@ local plugins = {
         priority = 1000,
         config = function()
             require('github-theme').setup({
-                -- Optional configuration options can go here
+                -- ...
             })
             vim.cmd('colorscheme github_dark_default')
         end,
