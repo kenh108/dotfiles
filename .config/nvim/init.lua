@@ -118,16 +118,28 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
     {
-        "rose-pine/neovim",
-        name = "rose-pine",
-        opts = {
-            variant = "dawn",
-        },
-        config = function(_, opts)
-            require("rose-pine").setup(opts)
-            vim.cmd("colorscheme rose-pine")
-        end
+        'projekt0n/github-nvim-theme',
+        name = 'github-theme',
+        lazy = false,
+        priority = 1000,
+        config = function()
+            require('github-theme').setup({
+                -- Optional configuration options can go here
+            })
+            vim.cmd('colorscheme github_dark_default')
+        end,
     },
+    -- {
+    --     "rose-pine/neovim",
+    --     name = "rose-pine",
+    --     opts = {
+    --         variant = "dawn",
+    --     },
+    --     config = function(_, opts)
+    --         require("rose-pine").setup(opts)
+    --         vim.cmd("colorscheme rose-pine")
+    --     end
+    -- },
     {
         'nvim-lualine/lualine.nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
