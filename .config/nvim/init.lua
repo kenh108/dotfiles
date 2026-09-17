@@ -24,12 +24,6 @@ vim.opt.relativenumber = true
 
 vim.opt.mouse = ""
 
--- vim.cmd([[
---     set whichwrap+=<,h
---     set whichwrap+=>,l
---     set whichwrap+=[,]")
--- ]])
-
 vim.cmd("autocmd FileType * setlocal formatoptions+=r formatoptions+=o") 
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -59,46 +53,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     end,
 })
 
--- -- Clean copy toggle
--- local clean_copy = false
---
--- local original_neotree_state = nil
---
--- function ToggleCleanCopy()
---     if not clean_copy then
---         local neotree_visible = false
---         for _, win in ipairs(vim.api.nvim_list_wins()) do
---             local buf = vim.api.nvim_win_get_buf(win)
---             local ft = vim.api.nvim_buf_get_option(buf, "filetype")
---             if ft == "neo-tree" then
---                 neotree_visible = true
---                 break
---             end
---         end
---         original_neotree_state = neotree_visible
---
---         vim.wo.relativenumber = false
---         if original_neotree_state then
---             vim.cmd("Neotree close")
---         end
---         clean_copy = true
---     else
---         vim.wo.relativenumber = true
---         if original_neotree_state then
---             vim.cmd("Neotree show")
---         end
---
---         clean_copy = false
---     end
--- end
---
--- vim.keymap.set(
---     "n",
---     "<leader>cc",
---     ToggleCleanCopy,
---     { desc = "Toggle clean copy mode (no line numbers, close NeoTree if open)" }
--- )
-
 -- Lazy setup
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -123,23 +77,20 @@ local plugins = {
         lazy = false,
         priority = 1000,
         config = function()
+            -- local palettes = {
+            --     github_dark_dimmed = {
+            --         bg1 = '#101216',
+            --     },
+            -- }
             require('github-theme').setup({
-                -- ...
+                options = {
+                    transparent = true,
+                },
+                palettes = palettes,
             })
             vim.cmd('colorscheme github_dark_default')
         end,
     },
-    -- {
-    --     "rose-pine/neovim",
-    --     name = "rose-pine",
-    --     opts = {
-    --         variant = "dawn",
-    --     },
-    --     config = function(_, opts)
-    --         require("rose-pine").setup(opts)
-    --         vim.cmd("colorscheme rose-pine")
-    --     end
-    -- },
     {
         'nvim-lualine/lualine.nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -189,6 +140,7 @@ local plugins = {
     },
     {
         'nvim-treesitter/nvim-treesitter',
+        -- branch = 'master',
         lazy = false,
         build = ':TSUpdate',
         config = function()
