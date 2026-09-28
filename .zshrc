@@ -15,6 +15,7 @@ KEYTIMEOUT=1
 # Environment variables
 export PATH="$HOME/bin:$PATH"
 export EDITOR='nvim'
+export VISUAL='nvim'
 
 # Aliases
 alias vim='nvim'
@@ -27,12 +28,10 @@ function zvm_config() {
 }
 
 # zsh vi mode (installed with git)
-[[ -f $HOME/.zsh-vi-mode/zsh-vi-mode.plugin.zsh ]] && source $HOME/.zsh-vi-mode/zsh-vi-mode.plugin.zsh
+source ~/.zsh/plugins/zsh-vi-mode/zsh-vi-mode.zsh
 
 # fzf configuration
-zvm_after_init_commands+=('[[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]] && source /usr/share/doc/fzf/examples/key-bindings.zsh')
-zvm_after_init_commands+=('[[ -f /usr/share/doc/fzf/examples/completion.zsh ]] && source /usr/share/doc/fzf/examples/completion.zsh')
-zvm_after_init_commands+=('[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh')
+zvm_after_init_commands+=('source <(fzf --zsh)')
 
 # Source Cargo environment (Rust's pacman and build system)
 [[ -f $HOME/.cargo/env ]] && source $HOME/.cargo/env
