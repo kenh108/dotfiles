@@ -17,8 +17,10 @@ export PATH="$HOME/bin:$PATH"
 export EDITOR='nvim'
 export VISUAL='nvim'
 
-# Aliases
+# neovim settings
 alias vim='nvim'
+# Only strictly necessary for manual install on Debian
+export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 
 bindkey -s '^X' 'tmux attach -t '
 
