@@ -27,7 +27,7 @@ vim.opt.mouse = ""
 vim.cmd("autocmd FileType * setlocal formatoptions+=r formatoptions+=o") 
 
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "yaml", "json" , "conf" },
+    pattern = { "yaml", "json", "conf", "toml" },
     callback = function()
         vim.bo.tabstop = 2
         vim.bo.shiftwidth = 2
