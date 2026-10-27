@@ -19,8 +19,10 @@ export VISUAL='nvim'
 
 # neovim settings
 alias vim='nvim'
-# Only strictly necessary for manual install on Debian
-export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+# Only necessary for manual install on Debian
+if command -v apt >/dev/null 2>&1; then
+    export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+fi
 
 bindkey -s '^X' 'tmux attach -t '
 
