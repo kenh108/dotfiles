@@ -1,40 +1,39 @@
--- Keymaps
 vim.g.mapleader = " "
-vim.keymap.set("n", " ", "<Nop>", { desc = "Ignore space", silent = true })
 
-vim.keymap.set("n", "<leader>h", "<C-w>h", { desc = "Switch to left window" })
-vim.keymap.set("n", "<leader>j", "<C-w>j", { desc = "Switch to window below" })
-vim.keymap.set("n", "<leader>k", "<C-w>k", { desc = "Switch to window above" })
-vim.keymap.set("n", "<leader>l", "<C-w>l", { desc = "Switch to right window" })
+vim.keymap.set("n", "<leader>cd", vim.cmd.Ex)
+vim.keymap.set('n', '<Leader><CR>', ':nohlsearch<CR>')
 
--- Clear search highlights with Space + Enter
-vim.keymap.set('n', '<Leader><CR>', ':nohlsearch<CR>', { desc = "Clear search highlights" })
-
--- Vim options
 vim.opt.autoindent = true
-vim.cmd("filetype indent off")
-
+vim.opt.expandtab = true
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
-vim.bo.softtabstop = 4
-vim.opt.expandtab = true
+vim.opt.softtabstop = 4
 
 vim.opt.number = true
 vim.opt.relativenumber = true
-
 vim.opt.mouse = ""
 
-vim.cmd("autocmd FileType * setlocal formatoptions+=r formatoptions+=o") 
+-- Tree-sitter handles indent
+vim.cmd("filetype indent off")
 
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "yaml", "json", "conf", "toml" },
+    pattern = "*",
     callback = function()
-        vim.bo.tabstop = 2
-        vim.bo.shiftwidth = 2
-        vim.bo.softtabstop = 2
-        vim.bo.expandtab = true
+        vim.opt_local.formatoptions:append("ro")
     end,
 })
+
+local function set_indent(width, filetypes)
+    vim.api.nvim_create_autocmd("FileType", {
+        pattern = filetypes,
+        callback = function()
+            vim.bo.tabstop     = width
+            vim.bo.shiftwidth  = width
+            vim.bo.softtabstop = width
+        end,
+    })
+end
+set_indent(2, { "yaml", "json", "conf", "toml" })
 
 -- Make yank automatically copy to local clipboard via OSC 52
 vim.api.nvim_create_autocmd('TextYankPost', {
@@ -77,16 +76,8 @@ local plugins = {
         lazy = false,
         priority = 1000,
         config = function()
-            -- local palettes = {
-            --     github_dark_dimmed = {
-            --         bg1 = '#101216',
-            --     },
-            -- }
             require('github-theme').setup({
-                options = {
-                    transparent = true,
-                },
-                palettes = palettes,
+                options = { transparent = true },
             })
             vim.cmd('colorscheme github_dark_default')
         end,
@@ -99,54 +90,11 @@ local plugins = {
         end,
     },
     {
-        "nvim-neo-tree/neo-tree.nvim",
-        branch = "v3.x",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "MunifTanjim/nui.nvim",
-            "nvim-tree/nvim-web-devicons", -- optional, but recommended
-        },
-        lazy = false, -- neo-tree will lazily load itself
-        config = function()
-            vim.keymap.set("n", "<leader>e", "<cmd>Neotree filesystem toggle left<CR>", {})
-
-            require("neo-tree").setup({
-                filesystem = {
-                    filtered_items = {
-                        visible = true,
-                        never_show = {
-                            ".venv",
-                            "__pycache__",
-                            ".git",
-                        },
-                    },
-                    window = {
-                        mappings = {
-                            ["/"] = "",
-                        },
-                    },
-                },
-                event_handlers = {
-                    {
-                        event = "neo_tree_buffer_enter",
-                        handler = function()
-                            vim.opt_local.number = true
-                            vim.opt_local.relativenumber = true
-                        end,
-                    },
-                },
-            })
-        end,
-    },
-    {
         'nvim-treesitter/nvim-treesitter',
-        -- branch = 'master',
         lazy = false,
         build = ':TSUpdate',
         config = function()
-            require('nvim-treesitter').install { 'lua', 'python', 'bash', 'html', 'json' }
-            -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-            -- this works for files opened with nvim command or afterwards from nvim (eg. :edit ...)
+            require('nvim-treesitter').install { 'lua', 'python', 'bash' }
             vim.api.nvim_create_autocmd("FileType", {
                 pattern = "*",
                 callback = function()
@@ -156,29 +104,12 @@ local plugins = {
             vim.opt.indentkeys = ""
         end
     },
-    {
-        "kylechui/nvim-surround",
-        version = "^4.0.0", -- Use for stability; omit to use `main` branch for the latest features
-        event = "VeryLazy",
-        -- Optional: See `:h nvim-surround.configuration` and `:h nvim-surround.setup` for details
-        -- config = function()
-        --     require("nvim-surround").setup({
-        --         -- Put your configuration here
-        --     })
-        -- end
-    },
 }
 
 local opts = {
-    checker = {
-        enabled = true,
-        notify = false,
-    },
-    change_detection = {
-        enabled = false,
-        notify = true,
-    },
+    install = { colorscheme = { "github_dark_default" } },
+    checker = { enabled = true },
+    change_detection = { enabled = false },
 }
 
 require("lazy").setup(plugins, opts)
-
