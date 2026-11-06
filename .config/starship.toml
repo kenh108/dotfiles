@@ -1,12 +1,12 @@
 add_newline = false
-format = "$all$fill$time$cmd_duration$status$line_break$character"
+format = "$all$fill$cmd_duration$line_break$character"
 
 [fill]
 symbol = ' '
 
 [time]
-disabled = false
-time_format = '%T, %d/%m/%Y'
+disabled = true
+time_format = '%T, %d/%m/%y'
 
 [directory]
 truncation_length = 0
