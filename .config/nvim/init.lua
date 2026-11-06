@@ -11,6 +11,7 @@ vim.opt.softtabstop = 4
 
 vim.opt.number = true
 vim.opt.relativenumber = true
+-- vim.opt.cursorline = true
 vim.opt.mouse = ""
 
 -- Tree-sitter handles indent
@@ -94,7 +95,7 @@ local plugins = {
         lazy = false,
         build = ':TSUpdate',
         config = function()
-            require('nvim-treesitter').install { 'lua', 'python', 'bash' }
+            require('nvim-treesitter').install { 'lua', 'python', 'bash', 'c' }
             vim.api.nvim_create_autocmd("FileType", {
                 pattern = "*",
                 callback = function()
