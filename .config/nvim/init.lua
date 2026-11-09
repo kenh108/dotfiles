@@ -11,11 +11,10 @@ vim.opt.softtabstop = 4
 
 vim.opt.number = true
 vim.opt.relativenumber = true
--- vim.opt.cursorline = true
 vim.opt.mouse = ""
 
 -- Tree-sitter handles indent
-vim.cmd("filetype indent off")
+-- vim.cmd("filetype indent off")
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "*",
@@ -89,21 +88,6 @@ local plugins = {
         config = function()
             require('lualine').setup()
         end,
-    },
-    {
-        'nvim-treesitter/nvim-treesitter',
-        lazy = false,
-        build = ':TSUpdate',
-        config = function()
-            require('nvim-treesitter').install { 'lua', 'python', 'bash', 'c' }
-            vim.api.nvim_create_autocmd("FileType", {
-                pattern = "*",
-                callback = function()
-                    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-                end,
-            })
-            vim.opt.indentkeys = ""
-        end
     },
 }
 
