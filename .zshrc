@@ -11,6 +11,8 @@ export EDITOR='nvim'
 export VISUAL='nvim'
 export MANPAGER='nvim +Man!'
 
+[[ -d /opt/nvim-linux-x86_64/bin ]] && export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+
 function zvm_config() {
     # Normal mode default for lines with zsh-vi-mode
     ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
@@ -23,7 +25,7 @@ elif [[ -f /usr/share/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh ]]; then
     source /usr/share/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 fi
 
-[[ -d /opt/nvim-linux-x86_64/bin ]] && export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+zvm_after_init_commands+=('source <(fzf --zsh)')
 
 # The following lines were added by compinstall
 zstyle :compinstall filename '/home/kenneth/.zshrc'
